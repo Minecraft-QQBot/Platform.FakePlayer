@@ -1,6 +1,20 @@
 {
+    "reconnect_interval": 5000,
+    "token": "",
+    "uri": "ws://localhost:25565/",
     "account": {
+        "auth": "",
+        "password": "",
         "username": "LonelySail",
-        "password": ""
-    }
+        "execute_commands": [
+            "register qwqwqwq123456 qwqwqwq123456"
+        ]
+    },
+    "servers": [
+        {
+            "name": "Survival",
+            "host": "mcsf.xpxgzs.top",
+            "port": 25565
+        }
+    ]
 }
