@@ -1,20 +1,21 @@
 {
-    "reconnect_interval": 5000,
-    "token": "",
-    "uri": "ws://localhost:25565/",
+    "reconnect_interval": 8000,
+    "token": "xpxsf123",
+    "uri": "ws://locolhost:8500/",
     "account": {
         "auth": "",
         "password": "",
-        "username": "LonelySail",
+        "username": "QwQ",
+        "permission": false,
         "execute_commands": [
-            "register qwqwqwq123456 qwqwqwq123456"
+            "l QwQ123"
         ]
     },
     "servers": [
         {
             "name": "Survival",
-            "host": "mcsf.xpxgzs.top",
-            "port": 25565
+            "host": "zhaoxi.xdmcs.top",
+            "port": 22222
         }
     ]
 }
