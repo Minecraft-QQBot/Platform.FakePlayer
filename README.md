@@ -27,11 +27,11 @@
 > [!WARNING]
 > 本项目采用 GPL3 许可证，请勿商用！如若修改请务必开源并且注明出处。
 
-一个通过在服务器上挂假人来与 [BotServer](https://github.com/Minecraft-QQBot/BotServer) 对接的工具，基于 Node.js 的 mineflayer 库。
+本项目是通过在服务器上挂假人来与 [BotServer](https://github.com/Minecraft-QQBot/BotServer) 对接的工具，基于 Node.js 的 mineflayer 库。
 
 ## 特色功能
 
-1. 私聊假人发送消息到 QQ 群。
+- 私聊假人发送消息到 QQ 群。
 
 ## 搭建环境
 
