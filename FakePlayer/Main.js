@@ -6,12 +6,9 @@ const config = Config.read_config();
 if (config) Utils.logger.info('加载配置文件成功！');
 else return Utils.logger.error('加载配置文件失败！已退出程序。');
 
-var players = [];
-
 for (const server of config.servers) {
     Utils.logger.info(`正在创建服务器 ${server.name}……`);
-    let player = new Player(config.account, server);
+    const player = new Player(config.account, server);
     player.create_connection();
-    players.push(player);
 }
 
