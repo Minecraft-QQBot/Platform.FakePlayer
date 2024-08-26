@@ -29,8 +29,12 @@
 
 本项目是通过在服务器上挂假人来与 [BotServer](https://github.com/Minecraft-QQBot/BotServer) 对接的工具，基于 Node.js 的 mineflayer 库。
 
+> [!CAUTION]
+> 只有 Mineflayer 库支持的 Minecraft 版本才能使用本工具，支持范围请到 [这里](https://prismarinejs.github.io/mineflayer/#/zh/README_ZH_CN?id=特点) 查看。
+
 ## 特色功能
 
+- 可以播报玩家死亡。
 - 私聊假人发送消息到 QQ 群。
 
 ## 搭建环境
