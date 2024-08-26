@@ -15,7 +15,3 @@ for (const server of config.servers) {
     players.push(player);
 }
 
-process.on('exit', () => {
-    for (const player in players)
-        player.close_connection();
-});
