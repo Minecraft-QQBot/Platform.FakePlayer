@@ -1,21 +1,21 @@
 {
     "reconnect_interval": 8000,
-    "token": "xpxsf123",
-    "uri": "ws://locolhost:8500/",
+    "token": "",
+    "uri": "ws://0.0.0.0:8500/",
     "account": {
         "auth": "",
         "password": "",
-        "username": "QwQ",
-        "permission": false,
+        "username": "QQBot",
+        "permission": true,
         "execute_commands": [
-            "l QwQ123"
+            "login password"
         ]
     },
     "servers": [
         {
             "name": "Survival",
-            "host": "zhaoxi.xdmcs.top",
-            "port": 22222
+            "host": "127.0.0.1",
+            "port": 25565
         }
     ]
 }
