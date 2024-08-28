@@ -44,7 +44,7 @@
 安装 Node.js 完毕后，你还需要安装如下依赖库。安装指令如下：
 
 ```bash
-npm install mineflayer websocket base-64 utf8
+npm install mineflayer base-64 utf8 ws
 ```
 
 > [!TIP]

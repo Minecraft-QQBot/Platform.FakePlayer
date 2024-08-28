@@ -30,7 +30,6 @@ class WebsocketSender {
         this.websocket = new WebSocket(this.websocket_uri, { headers: this.headers });
 
         this.websocket.on('open', () => {
-            this.register_handlers(this.websocket);
             this.process_tasks();
         });
         this.websocket.on('error', (error) => {
@@ -38,7 +37,6 @@ class WebsocketSender {
         });
         this.websocket.on('close', () => {
             logger.info(`[Sender] 与机器人的连接已断开！`);
-            setTimeout(() => this.connect(), this.interval);
         });
         this.websocket.on('message', (message) => {
             const response = decode(message);
@@ -55,7 +53,7 @@ class WebsocketSender {
         }
     }
 
-    async send_data(event_type, data = null) {
+    async send_data(event_type, data = null, wait_response = true) {
         const message_data = { type: event_type, data };
     
         if (!(this.websocket && this.websocket.readyState === WebSocket.OPEN)) {
@@ -64,17 +62,18 @@ class WebsocketSender {
             setTimeout(this.connect.bind(this), this.interval);
             return Promise.resolve(false);
         }
-    
+        
+        if (!wait_response) return true;
         this.websocket.send(encode(message_data));
-        response_promise = new Promise((resolve) => {
+        const response_promise = new Promise((resolve) => {
             this.responses.push(resolve);
         });
         return await response_promise;
     }
     
     async send_synchronous_message(message) {
-        logger.info(`[${this.name}] [Sender] 向 QQ 群发送消息 ${message}`);
-        return await this.send_data('message', message);
+        if (await this.send_data('message', message)) logger.info(`[${this.name}] [Sender] 向 QQ 群发送消息 ${message}`);
+        else logger.warn(`[${this.name}] [Sender] 向 QQ 群发送消息 ${message} 失败！请检查配置或查看是否启动服务端，然后重试。`);
     }
 
     async send_startup() {
@@ -86,11 +85,6 @@ class WebsocketSender {
     async send_shutdown() {
         if (await this.send_data('server_shutdown')) logger.info(`[${this.name}] [Sender] 发送服务器关闭消息成功！`);
         else logger.error(`[${this.name}] [Sender] 发送服务器关闭消息失败！请检查配置或查看是否启动服务端，然后重试。`);
-    }
-
-    async send_player_chat(player, message) {
-        if (await this.send_data('player_chat', [player, message])) logger.info(`[${this.name}] [Sender] 发送玩家 ${player} 消息 ${message} 成功！`);
-        else logger.error(`[${this.name}] [Sender] 发送玩家 ${player} 消息 ${message} 失败！请检查配置或查看是否启动服务端，然后重试。`);
     }
 
     async send_player_left(player) {
@@ -106,6 +100,11 @@ class WebsocketSender {
     async send_player_death(player, message) {
         if (await this.send_data('player_death', [player, message])) logger.info(`[${this.name}] [Sender] 发送玩家 ${player} 死亡消息 ${message} 成功！`);
         else logger.error(`[${this.name}] [Sender] 发送玩家 ${player} 死亡消息 ${message} 失败！请检查配置或查看是否启动服务端，然后重试。`);
+    }
+
+    async send_player_chat(player, message) {
+        await this.send_data('player_chat', [player, message], false);
+        logger.info(`[${this.name}] [Sender] 发送玩家 ${player} 消息 ${message} 成功！`);
     }
 }
 

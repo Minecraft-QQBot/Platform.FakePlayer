@@ -29,7 +29,7 @@ class Player {
         this.sender = new WebsocketSender(server.name);
         this.listener = new WebsocketListener(server.name);
         this.listener.on('message', this.broadcast_message.bind(this));
-        this.listener.on('plauer_list', this.get_player_list.bind(this));
+        this.listener.on('player_list', this.get_player_list.bind(this));
         this.listener.on('command', this.execute_command.bind(this));
         this.listener.on('mcdr_command', this.execute_mcdr_command.bind(this));
 
@@ -106,6 +106,12 @@ class Player {
             await this.sender.send_player_joined(player);
         else if (type === 'chat.type.text')
             await this.sender.send_player_chat(player, message.with[1].text);
+        else if (type === 'commands.message.display.incoming') {
+            const message_text = message.with[1].text;
+            if (await this.sender.send_synchronous_message(`[${this.name}] <${player}> ${message_text}`))
+                this.send_message(player, [{text: '发送消息成功！', color: 'green'}]);
+            else this.send_message(player, [{text: '发送消息失败！', color:'red'}]);
+        }
     }
 
     execute_command (data, resolve) {
@@ -120,15 +126,25 @@ class Player {
 
     get_player_list(data, resolve) {
         let players = [];
-        for (const player of this.bot.players)
-            if (player.username != this.bot.username)
-                players.push(player.username);
+        for (const player_name of Object.keys(this.bot.players))
+            if (player_name != this.bot.username)
+                players.push(player_name);
         resolve(players);
+    }
+
+    send_message(player, message) {
+        if (this.account_config.permission) {
+            this.bot.chat(`/tellraw ${player} ${JSON.stringify(message)}`);
+            return;
+        }
+        let text_message = '';
+        for (const segment of message) text_message += segment.text;
+        this.bot.whisper(player, text_message);
     }
 
     broadcast_message(data, resolve) {
         if (this.account_config.permission) {
-            this.bot.chat(`/tellraw @e ${JSON.stringify(data)}`);
+            this.bot.chat(`/tellraw @a ${JSON.stringify(data)}`);
             return resolve(undefined);
         }
         let text_message = '';
