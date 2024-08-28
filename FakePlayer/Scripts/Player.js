@@ -12,6 +12,7 @@ class Player {
     sender = null;
     listener = null;
 
+    connected = false;
     already_connecting = false;
 
     constructor(account, server) {
@@ -31,6 +32,9 @@ class Player {
         this.listener.on('plauer_list', this.get_player_list.bind(this));
         this.listener.on('command', this.execute_command.bind(this));
         this.listener.on('mcdr_command', this.execute_mcdr_command.bind(this));
+
+        this.sender.connect();
+        this.listener.connect();
     }
 
     close_connection() {
@@ -53,18 +57,32 @@ class Player {
         });
         this.bot.on('death', () => {
             logger.warn(`[${this.name}] [Player] 假人死亡，正在重生……`);
-            setTimeout(this.bot.respawn, 10000);
+            setTimeout(this.bot.respawn, 1000);
         });
 
         this.bot.on('kicked', this.on_kicked.bind(this));
         this.bot.on('message', this.on_message.bind(this));
 
-        this.bot.once('spawn', this.on_joined.bind(this));
+        this.bot.once('login', this.on_login.bind(this));
 
         this.already_connecting = false;
     }
 
+    async on_login() {
+        const execute_command = (index) => {
+            if (index >= this.account_config.execute_commands.length || (!this.connected)) return;
+            logger.debug(`[${this.name}] [Player] 执行命令：${this.account_config.execute_commands[index]}`)
+            this.bot.chat('/' + this.account_config.execute_commands[index]);
+            setTimeout(execute_command.bind(this, (index + 1)), 1000);
+        }
+
+        this.connected = true;
+        logger.info(`[${this.name}] [Player] 已连接到服务器 [${this.name}]！`);
+        setTimeout(execute_command.bind(this, 0), 2000);
+    }
+
     async on_kicked(reason) {
+        this.connected = false;
         logger.warn(`[${this.name}] [Player] 被踢出服务器：${reason}`);
         if (!this.already_connecting) {
             this.already_connecting = true;
@@ -72,20 +90,9 @@ class Player {
         }
     }
 
-    async on_joined() {
-        const execute_command = (index) => {
-            if (index >= this.account_config.execute_commands.length) return;
-            this.bot.chat('/' + this.account_config.execute_commands[index]);
-            setTimeout(execute_command.bind(this, (index + 1)), 1000);
-        }
-
-        logger.info(`[${this.name}] [Player] 已连接到服务器 [${this.name}]！`);
-        setTimeout(execute_command.bind(this, 0), 500);
-    }
-
     async on_message(message) {
         const type = message.translate;
-        if (!type) {
+        if (!(type && message.with)) {
             logger.info(`[${this.name}] [Player] 收无法解析的到服务器消息：${message}`);
             return;
         }

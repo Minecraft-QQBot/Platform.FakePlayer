@@ -11,4 +11,3 @@ for (const server of config.servers) {
     const player = new Player(config.account, server);
     player.create_connection();
 }
-
