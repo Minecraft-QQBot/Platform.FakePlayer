@@ -64,8 +64,13 @@ class Player {
         this.bot.on('message', this.on_message.bind(this));
 
         this.bot.once('login', this.on_login.bind(this));
+        this.bot.once('spawn', this.on_spawn.bind(this));
 
         this.already_connecting = false;
+    }
+
+    async on_spawn() {
+        await this.sender.send_server_startup();
     }
 
     async on_login() {
@@ -83,6 +88,7 @@ class Player {
 
     async on_kicked(reason) {
         this.connected = false;
+        await this.sender.send_server_shutdown();
         logger.warn(`[${this.name}] [Player] 被踢出服务器：${reason}`);
         if (!this.already_connecting) {
             this.already_connecting = true;

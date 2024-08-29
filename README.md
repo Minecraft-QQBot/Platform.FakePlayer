@@ -47,6 +47,9 @@
 npm install mineflayer base-64 utf8 ws
 ```
 
+> [!WARNING]
+> Windows 下请确保执行指令的目录是 FakePlayer 所在的目录，否则可能无法找到依赖库。你可以用 `cd` 指令切换，也可以直接在文件管理器中打开 FakePlayer 所在的目录，在路径栏输入 `cmd` 打开命令行。
+
 > [!TIP]
 > 若下了很久也没有安装成功，甚至报错，请尝试设置镜像源：
 > ```bash
